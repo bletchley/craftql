@@ -43,6 +43,7 @@ class GetCategoriesFieldSchema
             $event->mutation->addArgument($field)
                 ->type($inputObject)
                 ->lists()
+                ->nonNull($field->required)
                 ->onSave(function ($values) use ($groupId) {
                     $group = Craft::$app->getCategories()->getGroupById($groupId);
 

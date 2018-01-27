@@ -40,6 +40,7 @@ class GetAssetsFieldSchema
         $event->mutation->addArgument($field)
             ->lists()
             ->type($inputObject)
+            ->nonNull($field->required)
             ->onSave(function ($values) {
                 $images = [];
 

@@ -39,6 +39,7 @@ class GetEntriesFieldSchema
             });
 
         $event->mutation->addIntArgument($field)
-            ->lists();
+            ->lists()
+            ->nonNull($field->required);
     }
 }

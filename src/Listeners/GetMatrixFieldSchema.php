@@ -47,7 +47,10 @@ class GetMatrixFieldSchema
         }
 
 
-        $inputType = $this->getInputArgument()->getType();
+        $inputType = $this->getInputArgument()
+            ->nonNull($this->field->required)
+            ->getType();
+
         foreach ($this->getInputObjectTypes() as $type) {
             $inputType->addArgument($type->getContext()->handle)
                     ->type($type);
@@ -68,6 +71,11 @@ class GetMatrixFieldSchema
                 return ucfirst($this->field->handle).ucfirst($block->handle);
             })
             ->resolve(function ($root, $args, $context, $info) {
+//                var_dump($this->field->id);
+//                if ($this->field->id == 9) {
+//                    var_dump($root->{$this->field->handle}->all());
+//                    die;
+//                }
                 return $root->{$this->field->handle}->all();
             });
     }

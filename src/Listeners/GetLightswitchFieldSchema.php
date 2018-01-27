@@ -18,6 +18,7 @@ class GetLightswitchFieldSchema
 
         $event->schema->addBooleanField($event->sender);
         $event->query->addBooleanArgument($event->sender);
-        $event->mutation->addBooleanArgument($event->sender);
+        $event->mutation->addBooleanArgument($event->sender)
+            ->nonNull($event->sender->required);
     }
 }

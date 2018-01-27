@@ -21,12 +21,6 @@ class Union extends Field {
         return $this->resolveType;
     }
 
-//    function addType($typeName, $context=null) {
-//        $this->types[$typeName] = new Schema($this->request, $context);
-//        $this->types[$typeName]->name($typeName);
-//        return $this->types[$typeName];
-//    }
-
     function addType(Schema $type) {
         return $this->types[$type->getName()] = $type;
     }

@@ -45,6 +45,7 @@ class GetTagsFieldSchema
             $event->mutation->addArgument($field)
                 ->type($inputObject)
                 ->lists()
+                ->nonNull($field->required)
                 ->onSave(function ($values) use ($groupId) {
                     $group = Craft::$app->getTags()->getTagGroupById($groupId);
 
