@@ -10,9 +10,9 @@ class InputSchema extends BaseBuilder {
 
     protected static $objects;
 
-    function __construct($request, $name) {
+    function __construct($request, $context=null) {
         $this->request = $request;
-        $this->name = $name;
+        $this->context = $context;
     }
 
     function getGraphQLConfig() {

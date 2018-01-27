@@ -45,8 +45,10 @@ class Field extends BaseBuilder {
      * @param [type] $name
      * @return self
      */
-    function createInputObjectType($name): InputSchema {
-        return new InputSchema($this->request, $name);
+    function createInputObjectType($name, $context=null): InputSchema {
+        $schema = new InputSchema($this->request, $context);
+        $schema->name($name);
+        return $schema;
     }
 
     function getConfig() {

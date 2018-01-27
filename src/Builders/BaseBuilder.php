@@ -7,6 +7,8 @@ use markhuot\CraftQL\Request;
 
 class BaseBuilder extends Component {
 
+    use HasContextAttribute;
+
     /**
      * The name of our schema
      *

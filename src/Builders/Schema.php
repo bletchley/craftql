@@ -13,7 +13,6 @@ class Schema extends BaseBuilder {
 
     protected static $objects;
     protected $fields = [];
-    protected $context;
     protected $interfaces = [];
     protected $parent;
 
@@ -49,13 +48,6 @@ class Schema extends BaseBuilder {
     }
 
     /**
-     * Get any context used to create this schema
-     */
-    function getContext() {
-        return $this->context;
-    }
-
-    /**
      * Add a new field to this schema
      *
      * @param mixed $field
@@ -76,9 +68,10 @@ class Schema extends BaseBuilder {
      * @param string $name
      * @return self
      */
-    function createObjectType($name): self {
-        return (new Schema($this->request))
-            ->name($name);
+    function createObjectType($name, $context=null): Schema {
+        $schema = new Schema($this->request, $context);
+        $schema->name($name);
+        return $schema;
     }
 
     /**
@@ -87,8 +80,10 @@ class Schema extends BaseBuilder {
      * @param [type] $name
      * @return self
      */
-    function createInputObjectType($name): InputSchema {
-        return new InputSchema($this->request, $name);
+    function createInputObjectType($name, $context=null): InputSchema {
+        $schema = new InputSchema($this->request, $context);
+        $schema->name($name);
+        return $schema;
     }
 
     /**
