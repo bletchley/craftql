@@ -19,7 +19,7 @@ trait HasNonNullAttribute {
      * @param boolean $nonnull
      * @return self
      */
-    function nonNull(bool $nonNull=true): self {
+    function nonNull(/* php 7.1: bool? */ $nonNull=true): self {
         $this->isNonNull = $nonNull;
         return $this;
     }

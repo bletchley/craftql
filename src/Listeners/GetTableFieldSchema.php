@@ -57,6 +57,7 @@ class GetTableFieldSchema
         $event->mutation->addArgument($field)
             ->lists()
             ->type($inputSchema)
+            ->nonNull($field->required)
             ->onSave(function($value) use ($handleMapping) {
                 $newValue = [];
 

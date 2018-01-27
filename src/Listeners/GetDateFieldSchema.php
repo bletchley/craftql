@@ -22,6 +22,7 @@ class GetDateFieldSchema
 
         // @TODO make this timezone aware. if you send a unixtime stamp it should be for GMT
         $event->mutation->addIntArgument($event->sender)
+            ->nonNull($event->sender->required)
 //            ->onSave(function($value) {
 //                var_dump($value);
 //                die;

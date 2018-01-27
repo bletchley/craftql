@@ -18,20 +18,16 @@ class FieldService {
     private $fieldSchemas = [];
 
     function getSchemaForField(\craft\base\Field $field, \markhuot\CraftQL\Request $request, $parent) {
-        if (!isset($this->fieldSchemas[$field->id])) {
-            $event = new GetFieldSchemaEvent;
-            $event->schema = new \markhuot\CraftQL\Builders\Schema($request);
-            $event->query = new \markhuot\CraftQL\Builders\Field($request, 'QUERY');
-            $event->mutation = new \markhuot\CraftQL\Builders\Field($request, 'MUTATION');
-            $field->trigger('craftQlGetFieldSchema', $event);
-            $this->fieldSchemas[$field->id] = [
-                'schema' => $event->schema,
-                'query' => $event->query,
-                'mutation' => $event->mutation,
-            ];
-        }
-
-        return $this->fieldSchemas[$field->id];
+        $event = new GetFieldSchemaEvent;
+        $event->schema = new \markhuot\CraftQL\Builders\Schema($request);
+        $event->query = new \markhuot\CraftQL\Builders\Field($request, 'QUERY');
+        $event->mutation = new \markhuot\CraftQL\Builders\Field($request, 'MUTATION');
+        $field->trigger('craftQlGetFieldSchema', $event);
+        return [
+            'schema' => $event->schema,
+            'query' => $event->query,
+            'mutation' => $event->mutation,
+        ];
     }
 
     function getQueryArguments($request) {

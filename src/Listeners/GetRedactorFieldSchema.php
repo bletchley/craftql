@@ -33,6 +33,7 @@ class GetRedactorFieldSchema
 
         $event->schema->addField($event->sender)->type($outputSchema);
         $event->query->addStringArgument($event->sender);
-        $event->mutation->addStringArgument($event->sender);
+        $event->mutation->addStringArgument($event->sender)
+            ->nonNull($event->sender->required);
     }
 }

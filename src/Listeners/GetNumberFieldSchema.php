@@ -20,12 +20,14 @@ class GetNumberFieldSchema
         if ($field->decimals == 0) {
             $event->schema->addIntField($field);
             $event->query->addIntArgument($field);
-            $event->mutation->addIntArgument($field);
+            $event->mutation->addIntArgument($field)
+                ->nonNull($field->required);
         }
         else {
             $event->schema->addFloatField($field);
             $event->query->addFloatArgument($field);
-            $event->mutation->addFloatArgument($field);
+            $event->mutation->addFloatArgument($field)
+                ->nonNull($field->required);
         }
     }
 }

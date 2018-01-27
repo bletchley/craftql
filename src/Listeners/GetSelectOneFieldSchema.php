@@ -26,7 +26,8 @@ class GetSelectOneFieldSchema
             ->type($graphqlField->getType());
 
         $event->mutation->addArgument($field)
-            ->type($graphqlField->getType());
+            ->type($graphqlField->getType())
+            ->nonNull($field->required);
     }
 
     static function valuesForField($graphQLField, $craftField) {

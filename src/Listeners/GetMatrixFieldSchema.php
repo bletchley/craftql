@@ -68,6 +68,7 @@ class GetMatrixFieldSchema
             $event->mutation->addArgument($event->sender)
                 ->lists()
                 ->type($inputType)
+                ->nonNull($event->sender->required)
                 ->onSave(function ($values) {
                     $newValues = [];
 

@@ -16,6 +16,7 @@ class GetDefaultFieldSchema
 
         $event->schema->addStringField($event->sender);
         $event->query->addStringArgument($event->sender);
-        $event->mutation->addStringArgument($event->sender);
+        $event->mutation->addStringArgument($event->sender)
+            ->nonNull($event->sender->required);
     }
 }

@@ -35,6 +35,7 @@ class GetSelectMultipleFieldSchema
 
         $event->mutation->addArgument($craftField)
             ->lists()
-            ->type($graphqlField->getType());
+            ->type($graphqlField->getType())
+            ->nonNull($craftField->required);
     }
 }
