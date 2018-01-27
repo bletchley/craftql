@@ -47,13 +47,11 @@ class GetMatrixFieldSchema
         }
 
 
-        $input = $this->getInputObjectType();
+        $inputType = $this->getInputArgument()->getType();
         foreach ($this->getInputObjectTypes() as $type) {
-            $input->addArgument($type->getContext()->handle)
-                ->type($type);
+            $inputType->addArgument($type->getContext()->handle)
+                    ->type($type);
         }
-
-        $this->addMutationArgument($input);
 
     }
 
@@ -92,7 +90,7 @@ class GetMatrixFieldSchema
             $type->addFieldsByLayoutId($blockType->fieldLayoutId);
 
             if (empty($type->getFields())) {
-                $this->getEmptyBlockFieldsFallback($type);
+                $this->addEmptyBlockFieldsFallback($type);
             }
 
             $types[] = $type;
@@ -125,22 +123,40 @@ class GetMatrixFieldSchema
      * @param Schema $type
      * @return self|static
      */
-    protected function getEmptyBlockFieldsFallback(Schema $type): \markhuot\CraftQL\Builders\Field {
+    protected function addEmptyBlockFieldsFallback(Schema $type) {
         $warning = 'The block type, `'.$type->getContext()->handle.'` on `'.$this->field->handle.'`, has no fields. This would violate the GraphQL spec so we filled it in with this placeholder.';
 
-        return $type->addStringField('empty')
+        $type->addStringField('empty')
             ->description($warning)
             ->resolve($warning);
     }
 
     /**
-     * Gets a GraphQL input object representing the
-     * Craft Field we're handling
+     * Gets the argument that will represent the mutation
      *
-     * @return InputSchema
+     * @return Argument
      */
-    protected function getInputObjectType(): InputSchema {
-        return $this->mutation->createInputObjectType(ucfirst($this->field->handle) . 'Input');
+    protected function getInputArgument(): Argument {
+        $inputType = $this->mutation->createInputObjectType(ucfirst($this->field->handle) . 'Input');
+
+        return $this->mutation->addArgument($this->field)
+            ->lists()
+            ->type($inputType)
+            ->onSave(function ($values) {
+                $newValues = [];
+
+                foreach ($values as $key => $value) {
+                    $type = array_keys($value)[0];
+
+                    $newValues["new{$key}"] = [
+                        'type' => $type,
+                        'enabled' => 1,
+                        'fields' => $value[$type],
+                    ];
+                }
+
+                return $newValues;
+            });
     }
 
     /**
@@ -161,10 +177,7 @@ class GetMatrixFieldSchema
             $blockInputType->addArgumentsByLayoutId($blockType->fieldLayoutId);
 
             if (empty($blockInputType->getArguments())) {
-                $warning = 'The block type, `'.$blockType->handle.'` on `'.$this->field->handle.'`, has no fields. This would violate the GraphQL spec so we filled it in with this placeholder.';
-
-                $blockInputType->addStringArgument('empty')
-                    ->description($warning);
+                $this->addEmptyInputBlockFieldsFallback($blockInputType);
             }
 
             $types[] = $blockInputType;
@@ -190,30 +203,16 @@ class GetMatrixFieldSchema
     }
 
     /**
-     * Adds the passed input type as an argument to the mutation
+     * Adds an "empty" string argument to the passed type
+     * informing the user that the block is empty.
      *
-     * @param $inputType
-     * @return Argument
+     * @param InputSchema $type
      */
-    protected function addMutationArgument(InputSchema $inputType): Argument {
-        return $this->mutation->addArgument($this->field)
-            ->lists()
-            ->type($inputType)
-            ->onSave(function ($values) {
-                $newValues = [];
+    protected function addEmptyInputBlockFieldsFallback(InputSchema $type) {
+        $warning = 'The block type, `'.$type->getContext()->handle.'` on `'.$this->field->handle.'`, has no fields. This would violate the GraphQL spec so we filled it in with this placeholder.';
 
-                foreach ($values as $key => $value) {
-                    $type = array_keys($value)[0];
-
-                    $newValues["new{$key}"] = [
-                        'type' => $type,
-                        'enabled' => 1,
-                        'fields' => $value[$type],
-                    ];
-                }
-
-                return $newValues;
-            });
+        $type->addStringArgument('empty')
+            ->description($warning);
     }
 
 }
